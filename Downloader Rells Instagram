@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Reels Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fafafa;
+            padding: 30px;
+            text-align: center;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            background: #4c6ef5;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #3b5bdb;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Instagram Reels Downloader</h2>
+<p>Paste link Reels Instagram di bawah</p>
+
+<div class="box">
+    <input id="url" placeholder="https://www.instagram.com/reel/xxxx">
+    <button onclick="download()">Download</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+async function download() {
+    const link = document.getElementById("url").value;
+    const result = document.getElementById("result");
+
+    if (!link) {
+        result.innerHTML = "Masukkan URL dulu!";
+        return;
+    }
+
+    result.innerHTML = "Memproses...";
+
+    // API pihak ketiga
+    const api = "https://saveig.app/api/ajaxSearch?link=" + encodeURIComponent(link);
+
+    try {
+        const res = await fetch(api);
+        const data = await res.json();
+
+        if (data?.data?.medias[0]?.url) {
+            const video = data.data.medias[0].url;
+            result.innerHTML = `
+                <p>Video siap diunduh:</p>
+                <a href="${video}" download>
+                    <button>Download Video</button>
+                </a>
+                <br><br>
+                <video width="300" controls src="${video}"></video>
+            `;
+        } else {
+            result.innerHTML = "Gagal mengambil video. Link invalid atau API error.";
+        }
+
+    } catch (e) {
+        result.innerHTML = "Error mengambil data!";
+    }
+}
+</script>
+
+</body>
+</html>
